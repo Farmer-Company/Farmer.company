@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-danube-blue: #5B9EC8;
+  --color-wild-sand: #F4F4F4;
+  --color-cod-gray: #0E0E0E;
+
+  --font-sans: Inter, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-wild-sand text-cod-gray antialiased transition-colors duration-300;
+  }
+}
+
+/* Force dark class strategy if needed, but default is media.
+   Actually, creating a variant here might be needed if automatic detection isn't preferred.
+   In V4, darkMode: 'class' is not config based.
+   We just use the 'dark' variant.
+*/
