@@ -48,7 +48,7 @@ const LandingPage = () => (
 function App() {
   return (
     <ErrorBoundary>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
         <div className="min-h-screen bg-wild-sand dark:bg-cod-gray font-sans selection:bg-danube-blue selection:text-white transition-colors duration-300">
           <Suspense fallback={<LoadingSpinner />}>
