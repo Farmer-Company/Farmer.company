@@ -8,12 +8,12 @@ export const Masterplan = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="pt-24 min-h-screen bg-cod-gray"
+            className="pt-24 min-h-screen bg-black text-white"
         >
-            <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
-                <h1 className="text-4xl md:text-6xl font-bold text-wild-sand mb-6">The Masterplan</h1>
-                <p className="text-xl text-wild-sand/60 max-w-3xl mx-auto">
-                    Our strategic roadmap to fully autonomous sustainable farming by 2030.
+            <div className="max-w-7xl mx-auto px-6 mb-12">
+                <h1 className="text-4xl md:text-6xl font-bold font-sans mb-6 text-white tracking-tight text-center">The Masterplan</h1>
+                <p className="text-xl text-gray-400 max-w-3xl mx-auto text-center">
+                    A multi-phase roadmap to digitize, organize, and optimize the global agricultural supply chain.
                 </p>
             </div>
             <MasterplanSection />

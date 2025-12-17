@@ -10,7 +10,7 @@
 
 @layer base {
   body {
-    @apply bg-wild-sand text-cod-gray antialiased transition-colors duration-300;
+    @apply bg-black text-white antialiased transition-colors duration-300;
   }
 }
 

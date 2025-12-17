@@ -9,8 +9,11 @@ export const Market = () => {
             {/* Toolbar */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">The Exchange</h1>
-                    <p className="text-gray-500 font-mono text-xs">GLOBAL SUPPLY VISUALIZATION</p>
+                    <h1 className="text-2xl font-bold text-white font-sans flex items-center gap-2">
+                        The Exchange
+                        <span className="bg-blue-600 text-xs px-2 py-0.5 rounded-full uppercase tracking-wider">Beta</span>
+                    </h1>
+                    <p className="text-gray-500 font-mono text-xs">MARKETPLACE • VENDORS • CUSTOMERS</p>
                 </div>
                 <div className="relative w-64">
                     <input

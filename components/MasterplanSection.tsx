@@ -24,31 +24,34 @@ const phases = [
 
 export const MasterplanSection = () => {
     return (
-        <section id="masterplan" className="py-20 bg-cod-gray text-wild-sand">
+        <section id="masterplan" className="py-20 bg-black text-white px-2">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="mb-16">
-                    <span className="text-danube-blue font-mono text-sm tracking-widest uppercase block mb-4">The Masterplan</span>
-                    <h2 className="text-4xl md:text-6xl font-bold max-w-3xl leading-tight">
+                <div className="mb-24">
+                    <span className="text-danube-blue font-mono text-sm tracking-[0.3em] uppercase block mb-6">The Masterplan</span>
+                    <h2 className="text-4xl md:text-7xl font-bold font-sans max-w-3xl leading-none tracking-tight">
                         Scaling sustainable agriculture for a hungry planet.
                     </h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                    {/* Connecting line (hidden on mobile) */}
+                    <div className="hidden md:block absolute top-[2.5rem] left-0 w-full h-px bg-white/20 z-0"></div>
+
                     {phases.map((item, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.2 }}
                             viewport={{ once: true }}
-                            className="border-t border-wild-sand/20 pt-8"
+                            className="relative z-10"
                         >
-                            <div className="flex justify-between items-baseline mb-6">
-                                <span className="text-3xl font-light text-danube-blue">{item.phase}</span>
-                                <span className="font-mono text-xs opacity-50">{item.year}</span>
+                            <div className="flex justify-between items-baseline mb-8">
+                                <span className="text-5xl font-light text-white font-sans bg-black pr-4">{item.phase}</span>
+                                <span className="font-mono text-sm text-gray-500 border border-gray-800 px-2 py-1 rounded">{item.year}</span>
                             </div>
-                            <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
-                            <p className="text-wild-sand/60 leading-relaxed">
+                            <h3 className="text-2xl font-bold mb-4 font-sans text-danube-blue">{item.title}</h3>
+                            <p className="text-gray-400 leading-relaxed text-lg">
                                 {item.description}
                             </p>
                         </motion.div>
