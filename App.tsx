@@ -1,27 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { PublicLayout } from './layouts/PublicLayout';
 import { PlatformLayout } from './layouts/PlatformLayout';
 import { Hero } from './components/Hero';
 import { TechnologySection } from './components/TechnologySection';
 import { MasterplanSection } from './components/MasterplanSection';
-import { Privacy } from './pages/Privacy';
-import { Terms } from './pages/Terms';
-import { Contact } from './pages/Contact';
-import { Technology } from './pages/Technology';
-import { Masterplan } from './pages/Masterplan';
-import { News } from './pages/News';
-import { Careers } from './pages/Careers';
-import { Shop } from './pages/Shop';
-import { Reserve } from './pages/Reserve';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { SEO } from './components/SEO';
 
-// App Pages
-import { Auth } from './pages/app/auth/Auth';
-import { PortalPlaceholder } from './components/PortalPlaceholder';
-import { FarmerDashboard } from './pages/app/farmer/Dashboard';
-import { SupplyListing } from './pages/app/farmer/SupplyListing';
-import { Market } from './pages/app/buyer/Market';
-import { FleetView } from './pages/app/logistics/FleetView';
+// Lazy Load Pages for Performance
+const Privacy = lazy(() => import('./pages/Privacy').then(module => ({ default: module.Privacy })));
+const Terms = lazy(() => import('./pages/Terms').then(module => ({ default: module.Terms })));
+const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
+const Technology = lazy(() => import('./pages/Technology').then(module => ({ default: module.Technology })));
+const Masterplan = lazy(() => import('./pages/Masterplan').then(module => ({ default: module.Masterplan })));
+const News = lazy(() => import('./pages/News').then(module => ({ default: module.News })));
+const Careers = lazy(() => import('./pages/Careers').then(module => ({ default: module.Careers })));
+const Shop = lazy(() => import('./pages/Shop').then(module => ({ default: module.Shop })));
+const Reserve = lazy(() => import('./pages/Reserve').then(module => ({ default: module.Reserve })));
+
+// App Pages Lazy Load
+const Auth = lazy(() => import('./pages/app/auth/Auth').then(module => ({ default: module.Auth })));
+const FarmerDashboard = lazy(() => import('./pages/app/farmer/Dashboard').then(module => ({ default: module.FarmerDashboard })));
+const SupplyListing = lazy(() => import('./pages/app/farmer/SupplyListing').then(module => ({ default: module.SupplyListing })));
+const Market = lazy(() => import('./pages/app/buyer/Market').then(module => ({ default: module.Market })));
+const FleetView = lazy(() => import('./pages/app/logistics/FleetView').then(module => ({ default: module.FleetView })));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -34,6 +38,7 @@ const ScrollToTop = () => {
 
 const LandingPage = () => (
   <>
+    <SEO title="Home" description="The Farmer Company is building The Digital Orchard - a unified ecosystem for the future of agriculture." />
     <Hero />
     <TechnologySection />
     <MasterplanSection />
@@ -42,38 +47,42 @@ const LandingPage = () => (
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="min-h-screen bg-wild-sand dark:bg-cod-gray font-sans selection:bg-danube-blue selection:text-white transition-colors duration-300">
-        <Routes>
-          {/* Public Website Routes */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/technology" element={<Technology />} />
-            <Route path="/masterplan" element={<Masterplan />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/reserve" element={<Reserve />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/contact" element={<Contact />} />
-          </Route>
+    <ErrorBoundary>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen bg-wild-sand dark:bg-cod-gray font-sans selection:bg-danube-blue selection:text-white transition-colors duration-300">
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              {/* Public Website Routes */}
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/technology" element={<><SEO title="Technology" /><Technology /></>} />
+                <Route path="/masterplan" element={<><SEO title="Masterplan" /><Masterplan /></>} />
+                <Route path="/news" element={<><SEO title="News" /><News /></>} />
+                <Route path="/careers" element={<><SEO title="Careers" /><Careers /></>} />
+                <Route path="/shop" element={<><SEO title="Shop" /><Shop /></>} />
+                <Route path="/reserve" element={<><SEO title="Reserve" /><Reserve /></>} />
+                <Route path="/privacy" element={<><SEO title="Privacy Policy" /><Privacy /></>} />
+                <Route path="/terms" element={<><SEO title="Terms of Service" /><Terms /></>} />
+                <Route path="/contact" element={<><SEO title="Contact Us" /><Contact /></>} />
+              </Route>
 
-          {/* Platform Application Routes */}
-          <Route path="/app/auth" element={<Auth />} />
+              {/* Platform Application Routes */}
+              <Route path="/app/auth" element={<><SEO title="Login" /><Auth /></>} />
 
-          <Route path="/app" element={<PlatformLayout />}>
-            <Route path="farmer" element={<FarmerDashboard />} />
-            <Route path="farmer/new-listing" element={<SupplyListing />} />
+              <Route path="/app" element={<PlatformLayout />}>
+                <Route path="farmer" element={<><SEO title="Farmer Portal" /><FarmerDashboard /></>} />
+                <Route path="farmer/new-listing" element={<><SEO title="New Listing" /><SupplyListing /></>} />
 
-            <Route path="buyer" element={<Market />} />
-            <Route path="logistics" element={<FleetView />} />
-          </Route>
+                <Route path="buyer" element={<><SEO title="Exchange Market" /><Market /></>} />
+                <Route path="logistics" element={<><SEO title="RouteMaster" /><FleetView /></>} />
+              </Route>
 
-        </Routes>
-      </div>
-    </Router>
+            </Routes>
+          </Suspense>
+        </div>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

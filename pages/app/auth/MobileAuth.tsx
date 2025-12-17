@@ -77,7 +77,8 @@ export const MobileLoginForm = () => {
                                 <label className="block text-xs font-mono text-gray-400 mb-2">MOBILE NUMBER</label>
                                 <div className="relative">
                                     <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
-                                    <input
+                                    <motion.input
+                                        whileFocus={{ scale: 1.01, borderColor: '#4A90E2' }} // Danube Blueish
                                         type="tel"
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
@@ -105,7 +106,8 @@ export const MobileLoginForm = () => {
 
                         <div className="flex justify-center gap-4 mb-8">
                             {otp.map((digit, idx) => (
-                                <input
+                                <motion.input
+                                    whileFocus={{ scale: 1.1, borderColor: '#4A90E2' }}
                                     key={idx}
                                     id={`otp-${idx}`}
                                     type="text"
@@ -134,18 +136,33 @@ export const MobileLoginForm = () => {
                     >
                         <h2 className="text-2xl font-bold text-white mb-6">Select Identity</h2>
                         <div className="space-y-4">
-                            <div onClick={() => handleRoleSelect('farmer')} className="p-4 bg-[#1A1A1A] border border-white/10 rounded-xl hover:border-danube-blue cursor-pointer transition-colors group">
+                            <motion.div
+                                onClick={() => handleRoleSelect('farmer')}
+                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(74, 144, 226, 0.05)' }}
+                                whileTap={{ scale: 0.98 }}
+                                className="p-4 bg-[#1A1A1A] border border-white/10 rounded-xl hover:border-danube-blue cursor-pointer transition-colors group"
+                            >
                                 <div className="text-lg font-bold text-white group-hover:text-danube-blue">I am a Farmer</div>
                                 <div className="text-xs text-gray-500">Access Origin Portal</div>
-                            </div>
-                            <div onClick={() => handleRoleSelect('buyer')} className="p-4 bg-[#1A1A1A] border border-white/10 rounded-xl hover:border-danube-blue cursor-pointer transition-colors group">
+                            </motion.div>
+                            <motion.div
+                                onClick={() => handleRoleSelect('buyer')}
+                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(74, 144, 226, 0.05)' }}
+                                whileTap={{ scale: 0.98 }}
+                                className="p-4 bg-[#1A1A1A] border border-white/10 rounded-xl hover:border-danube-blue cursor-pointer transition-colors group"
+                            >
                                 <div className="text-lg font-bold text-white group-hover:text-danube-blue">I am a Buyer</div>
                                 <div className="text-xs text-gray-500">Access Exchange Portal</div>
-                            </div>
-                            <div onClick={() => handleRoleSelect('logistics')} className="p-4 bg-[#1A1A1A] border border-white/10 rounded-xl hover:border-danube-blue cursor-pointer transition-colors group">
+                            </motion.div>
+                            <motion.div
+                                onClick={() => handleRoleSelect('logistics')}
+                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(74, 144, 226, 0.05)' }}
+                                whileTap={{ scale: 0.98 }}
+                                className="p-4 bg-[#1A1A1A] border border-white/10 rounded-xl hover:border-danube-blue cursor-pointer transition-colors group"
+                            >
                                 <div className="text-lg font-bold text-white group-hover:text-danube-blue">I am Logistics</div>
                                 <div className="text-xs text-gray-500">Access RouteMaster</div>
-                            </div>
+                            </motion.div>
                         </div>
                     </motion.div>
                 )}
