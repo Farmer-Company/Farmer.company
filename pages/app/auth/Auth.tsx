@@ -275,6 +275,16 @@ export const Auth = () => {
                         </motion.form>
                     )}
                 </AnimatePresence>
+
+                <div className="mt-8 text-center">
+                    <button
+                        onClick={() => window.location.href = '/app/market'}
+                        className="text-xs font-mono text-gray-600 hover:text-white transition-colors group"
+                    >
+                        <span className="mr-2 opacity-50 text-gray-500 group-hover:text-green-500 transition-colors">root@guest:~$</span>
+                        ./execute_guest_session.sh
+                    </button>
+                </div>
             </div>
         </div>
     );
