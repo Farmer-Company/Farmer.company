@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Check, Loader2, User, Phone, Terminal } from 'lucide-react';
+import { supabase, isMockMode } from '../../../lib/supabase';
 
 type Role = 'customer' | 'farmer' | 'logistics' | 'vendor';
 
@@ -58,24 +59,45 @@ export const Auth = () => {
         }
     };
 
+
+
     const handleFinalSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        // Simulate DB Save
-        const userData: BetaUser = {
+        const userData = {
             name,
             phone,
             role: selectedRole,
-            location: location || undefined
+            latitude: location?.latitude || null,
+            longitude: location?.longitude || null,
+            created_at: new Date().toISOString()
         };
-        console.log('Saving to DB:', userData);
 
-        setTimeout(() => {
-            setLoading(false);
+        try {
+            if (!isMockMode) {
+                const { error } = await supabase
+                    .from('beta_users')
+                    .insert([userData]);
+
+                if (error) throw error;
+            } else {
+                // Mock Mode Simulation
+                console.log('Mock Mode: Simulate Saving to DB:', userData);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+
             setStep('waitlist');
-        }, 1500);
+        } catch (err) {
+            console.error('Error saving to Supabase:', err);
+            // Fallback to waitlist anyway for user experience, but log error
+            alert('Note: Could not save to real database (Table likely key missing or table missing). Proceeding locally.');
+            setStep('waitlist');
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     if (step === 'waitlist') {
         return (
@@ -207,8 +229,8 @@ export const Auth = () => {
                                             key={role.id}
                                             onClick={() => setSelectedRole(role.id as Role)}
                                             className={`p-4 rounded-lg cursor-pointer border transition-all ${selectedRole === role.id
-                                                    ? 'bg-[#111] border-current'
-                                                    : 'bg-black border-gray-800 hover:border-gray-700'
+                                                ? 'bg-[#111] border-current'
+                                                : 'bg-black border-gray-800 hover:border-gray-700'
                                                 }`}
                                             style={{
                                                 borderColor: selectedRole === role.id ? role.color : undefined,
@@ -233,8 +255,8 @@ export const Auth = () => {
                             <div
                                 onClick={getLocation}
                                 className={`p-4 rounded-lg border border-dashed cursor-pointer flex items-center justify-center gap-2 transition-all ${location
-                                        ? 'border-green-500 bg-green-500/10 text-green-500'
-                                        : 'border-gray-700 text-gray-500 hover:text-white hover:border-white'
+                                    ? 'border-green-500 bg-green-500/10 text-green-500'
+                                    : 'border-gray-700 text-gray-500 hover:text-white hover:border-white'
                                     }`}
                             >
                                 <MapPin size={20} />

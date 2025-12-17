@@ -17,9 +17,14 @@ export const HeroSection: React.FC = () => {
                     <br />
                     <span className="reveal-text delay-2">ORCHARD</span>
                 </h1>
-                <p className="hero-subtitle reveal-text delay-3">
-                    WE ARE BUILDING THE DIGITAL NERVOUS SYSTEM FOR GLOBAL AGRICULTURE
-                </p>
+                <div className="hero-subtitle-container reveal-text delay-3">
+                    <p className="text-gray-400 mb-2 tracking-widest text-sm font-mono">
+                        WE ARE BUILDING THE DIGITAL NERVOUS SYSTEM FOR GLOBAL AGRICULTURE
+                    </p>
+                    <p className="text-white text-xl md:text-2xl font-light leading-relaxed">
+                        The Operating System for the <span className="font-medium text-green-500">Agricultural Economy</span>.
+                    </p>
+                </div>
             </div>
         </section>
     );
