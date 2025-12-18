@@ -22,6 +22,34 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
+/* Neon Attractor Pulse when collapsed and active */
+.premium-navigation.active-pulse:not(:hover) {
+    border-color: rgba(41, 98, 255, 0.4);
+    box-shadow:
+        0 0 15px rgba(41, 98, 255, 0.2),
+        0 0 0 1px rgba(41, 98, 255, 0.2);
+    animation: navPulse 3s infinite ease-in-out;
+}
+
+@keyframes navPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 15px rgba(41, 98, 255, 0.2),
+            0 0 0 1px rgba(41, 98, 255, 0.2);
+        border-color: rgba(41, 98, 255, 0.4);
+    }
+
+    50% {
+        box-shadow:
+            0 0 25px rgba(41, 98, 255, 0.4),
+            0 0 5px rgba(41, 98, 255, 0.3),
+            0 0 0 1px rgba(41, 98, 255, 0.5);
+        border-color: rgba(41, 98, 255, 0.6);
+    }
+}
+
 .premium-navigation:hover {
     transform: translateX(-50%) scale(1);
     background: rgba(5, 5, 5, 0.95);

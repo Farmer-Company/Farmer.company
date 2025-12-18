@@ -27,6 +27,7 @@ const SupplyListing = lazy(() => import('./pages/app/farmer/SupplyListing').then
 const Market = lazy(() => import('./pages/app/buyer/Market').then(module => ({ default: module.Market })));
 const FleetView = lazy(() => import('./pages/app/logistics/FleetView').then(module => ({ default: module.FleetView })));
 const PremiumHome = lazy(() => import('./pages/PremiumHome').then(module => ({ default: module.PremiumHome })));
+const Pricing = lazy(() => import('./pages/Pricing').then(module => ({ default: module.Pricing })));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/privacy" element={<><SEO title="Privacy Policy" /><Privacy /></>} />
                 <Route path="/terms" element={<><SEO title="Terms of Service" /><Terms /></>} />
                 <Route path="/contact" element={<><SEO title="Contact Us" /><Contact /></>} />
+                <Route path="/pricing" element={<Pricing />} />
               </Route>
 
               {/* Platform Application Routes */}

@@ -1,6 +1,7 @@
 import { PremiumLayout } from '../components/premium/Layout';
 import { HeroSection } from '../components/premium/HeroSection';
 import { ContentSection } from '../components/premium/ContentSection';
+import { ProduceMarketplace } from '../components/premium/ProduceMarketplace';
 import { TechnologySection } from '../components/TechnologySection';
 import { MasterplanSection } from '../components/MasterplanSection';
 import { ContactSection } from '../components/ContactSection';
@@ -17,7 +18,7 @@ export const PremiumHome = () => {
                     id="origin"
                     title="ORIGIN"
                     text="It starts with the soil. Empowering farmers with data, capital, and direct market access."
-                    subtext="Join the revolution. Get fair prices and instant payments."
+                    subtext="Connect with us for fair prices, instant payments, and market access."
                     align="center"
                     ctaLabel="Farmer Access"
                     ctaLink="/app/auth?role=farmer"
@@ -26,17 +27,20 @@ export const PremiumHome = () => {
                     id="exchange"
                     title="EXCHANGE"
                     text="A frictionless marketplace connecting global demand with local supply."
-                    subtext="Sourcing made simple. Transparency guaranteed."
-                    align="left"
+                    subtext="Connect with us to source quality produce with full transparency."
+                    align="center"
                     ctaLabel="Enter Marketplace"
                     ctaLink="/app/auth?role=buyer"
                 />
+                <div id="marketplace">
+                    <ProduceMarketplace />
+                </div>
                 <ContentSection
                     id="routemaster"
                     title="ROUTEMASTER"
                     text="Optimizing logistics to reduce waste and ensure freshness from farm to fork."
                     subtext="The backbone of our supply chain."
-                    align="left"
+                    align="center"
                     ctaLabel="Logistics Network"
                     ctaLink="/app/auth?role=logistics"
                 />

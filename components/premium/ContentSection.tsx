@@ -10,9 +10,10 @@ interface ContentSectionProps {
     align?: 'left' | 'center' | 'right';
     ctaLabel?: string;
     ctaLink?: string;
+    produceItems?: Array<{ name: string; icon: string }>;
 }
 
-export const ContentSection: React.FC<ContentSectionProps> = ({ id, title, text, subtext, align = 'left', ctaLabel, ctaLink }) => {
+export const ContentSection: React.FC<ContentSectionProps> = ({ id, title, text, subtext, align = 'left', ctaLabel, ctaLink, produceItems }) => {
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
@@ -56,6 +57,18 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ id, title, text,
                 <h2 className="section-title">{title}</h2>
                 <p className="section-text">{text}</p>
                 {subtext && <p className="section-subtext">{subtext}</p>}
+
+                {produceItems && produceItems.length > 0 && (
+                    <div className="produce-items-grid">
+                        {produceItems.map((item, index) => (
+                            <div key={index} className="produce-item">
+                                <div className="produce-icon">{item.icon}</div>
+                                <div className="produce-name">{item.name}</div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
 
                 {ctaLabel && (
                     <button className="premium-cta-button" onClick={handleCtaClick}>
