@@ -5,7 +5,11 @@ export const HeroSection: React.FC = () => {
     return (
         <section id="hero" className="premium-hero-section">
             <div className="video-background">
-                {/* Placeholder for actual video source */}
+                <img
+                    src="/assets/hero-background.png"
+                    alt="Digital Orchard"
+                    className="absolute inset-0 w-full h-full object-cover ken-burns"
+                />
                 <div className="video-overlay"></div>
             </div>
 

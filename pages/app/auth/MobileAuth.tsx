@@ -71,6 +71,12 @@ export const MobileLoginForm = () => {
                         initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
                         key="phone"
                     >
+                        <div className="flex justify-center mb-6">
+                            <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-lg" />
+                        </div>
+                        <div className="flex justify-center mb-6">
+                            <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-lg" />
+                        </div>
                         <h2 className="text-2xl font-bold text-white mb-6 text-center">Welcome Back</h2>
                         <form onSubmit={handleSendOtp} className="space-y-4">
                             <div>

@@ -134,7 +134,7 @@ export const Navigation = () => {
         <nav className={`premium-navigation group ${activeSection ? 'active-pulse' : ''}`}>
             <div className="nav-logo cursor-pointer flex items-center gap-2" onClick={() => window.location.href = '/'}>
                 {activeItem ? (
-                    { activeItem?(
+
                     (() => {
                         const progress = sectionProgress[activeItem.id] || 0;
                         const isCompleted = progress >= 100;

@@ -21,9 +21,22 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* Dark, agricultural vibe gradient */
-    background: radial-gradient(circle at 50% 50%, #1a251a 0%, #000000 70%);
     z-index: -1;
+    overflow: hidden;
+}
+
+/* Ken Burns Effect */
+.ken-burns {
+    animation: kenBurns 20s ease-out infinite alternate;
+}
+
+@keyframes kenBurns {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1);
+    }
 }
 
 .premium-hero-section .video-overlay {
@@ -32,7 +45,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    /* Gradient overlay for text readability */
+    background: radial-gradient(circle at 50% 50%, rgba(26, 37, 26, 0.4) 0%, rgba(0, 0, 0, 0.8) 90%);
+    z-index: 1;
 }
 
 .premium-hero-section .hero-content {
@@ -50,6 +65,7 @@
     margin-bottom: 2rem;
     letter-spacing: -2px;
     color: white;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .premium-hero-section .hero-subtitle {

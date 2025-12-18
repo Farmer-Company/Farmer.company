@@ -9,7 +9,7 @@ type ViewMode = 'buyer' | 'seller';
 interface ProduceItem {
     id: string;
     name: string;
-    icon: string;
+    image: string;
     basePrice: number;
     unit: string;
     available: number;
@@ -23,7 +23,7 @@ const produceData: ProduceItem[] = [
     {
         id: 'coconut',
         name: 'Coconuts',
-        icon: '🥥',
+        image: '/assets/coconut.png',
         basePrice: 45,
         unit: 'per 100 units',
         available: 8500,
@@ -35,7 +35,7 @@ const produceData: ProduceItem[] = [
     {
         id: 'mango',
         name: 'Mango',
-        icon: '🥭',
+        image: '/assets/mango.png',
         basePrice: 120,
         unit: 'per kg',
         available: 6200,
@@ -47,7 +47,7 @@ const produceData: ProduceItem[] = [
     {
         id: 'pineapple',
         name: 'Pineapple',
-        icon: '🍍',
+        image: '/assets/pineapple.png',
         basePrice: 85,
         unit: 'per dozen',
         available: 4800,
@@ -263,7 +263,9 @@ export const ProduceMarketplace = () => {
                             >
                                 {/* Card Header */}
                                 <div className="card-header">
-                                    <div className="produce-icon-large">{item.icon}</div>
+                                    <div className="produce-image-container">
+                                        <img src={item.image} alt={item.name} className="produce-image" />
+                                    </div>
                                     <div className="card-title-section">
                                         <h4 className="produce-name">{item.name}</h4>
                                         <span className={`quality-badge quality-${item.quality.replace('+', 'plus')}`}>

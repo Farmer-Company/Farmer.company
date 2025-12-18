@@ -3,6 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Check, Loader2, User, Phone, Terminal, Sparkles } from 'lucide-react';
 import { supabase, isMockMode } from '../../../lib/supabase';
+import { CountrySelect } from '../../../components/ui/CountrySelect';
+import { Captcha } from '../../../components/ui/Captcha';
+import { countries, defaultCountry, Country } from '../../../lib/countries';
 
 type Role = 'customer' | 'farmer' | 'logistics' | 'vendor';
 
@@ -74,31 +77,86 @@ export const Auth = () => {
 
     const [step, setStep] = useState<'phone' | 'otp' | 'details' | 'waitlist'>('phone');
     const [loading, setLoading] = useState(false);
+
+    // Auth State
+    const [country, setCountry] = useState<Country>(defaultCountry);
     const [phone, setPhone] = useState('');
-    const [otp, setOtp] = useState('');
+    const [isHuman, setIsHuman] = useState(false);
+
+    const [otp, setOtp] = useState(['', '', '', '', '', '']); // 6 Digit OTP
     const [name, setName] = useState('');
     const [selectedRole, setSelectedRole] = useState<Role>(initialRole || 'customer');
     const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
     const [showConfetti, setShowConfetti] = useState(false);
 
     const roles = [
-        { id: 'customer', label: 'Customer', color: '#E50914', desc: 'I want to buy fresh produce.' }, // Netflix Red
-        { id: 'farmer', label: 'Farmer', color: '#1DB954', desc: 'I grow the produce.' }, // Spotify Green
-        { id: 'vendor', label: 'Vendor', color: '#2962FF', desc: 'I supply equipment/seeds.' }, // Blue
-        { id: 'logistics', label: 'Logistics', color: '#8A2BE2', desc: 'I move the goods.' }, // Violet
+        { id: 'customer', label: 'Customer', color: '#E50914', desc: 'I want to buy fresh produce.' },
+        { id: 'farmer', label: 'Farmer', color: '#1DB954', desc: 'I grow the produce.' },
+        { id: 'vendor', label: 'Vendor', color: '#2962FF', desc: 'I supply equipment/seeds.' },
+        { id: 'logistics', label: 'Logistics', color: '#8A2BE2', desc: 'I move the goods.' },
     ];
+
+    // Auto-detect country based on location
+    useEffect(() => {
+        if (location) {
+            // In a real app, reverse geocode here. 
+            // For now, if lat/long is approx India/US, we switch.
+            // Simplified Mock Logic:
+            const { latitude, longitude } = location;
+            if (latitude > 8 && latitude < 37 && longitude > 68 && longitude < 97) {
+                setCountry(countries.find(c => c.code === 'IN') || defaultCountry);
+            } else if (latitude > 24 && latitude < 49 && longitude > -125 && longitude < -66) {
+                setCountry(countries.find(c => c.code === 'US') || defaultCountry);
+            }
+            // Add other regions as needed
+        }
+    }, [location]);
 
     const handlePhoneSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!isHuman) {
+            alert('Please complete the security check.');
+            return;
+        }
+        if (phone.length !== country.phoneLength) {
+            alert(`Please enter a valid ${country.phoneLength}-digit mobile number for ${country.name}`);
+            return;
+        }
+
         setLoading(true);
         setTimeout(() => {
             setLoading(false);
             setStep('otp');
-        }, 1000);
+        }, 1500);
+    };
+
+    const handleOtpChange = (index: number, value: string) => {
+        if (value.length > 1) return;
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`otp-${index + 1}`);
+            nextInput?.focus();
+        }
+    };
+
+    const handleOtpBackspace = (index: number, e: React.KeyboardEvent) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            const prevInput = document.getElementById(`otp-${index - 1}`);
+            prevInput?.focus();
+        }
     };
 
     const handleOtpSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const otpString = otp.join('');
+        if (otpString.length !== 6) {
+            alert('Please enter the full 6-digit code');
+            return;
+        }
+
         setLoading(true);
         setTimeout(() => {
             setLoading(false);
@@ -108,14 +166,20 @@ export const Auth = () => {
 
     const getLocation = () => {
         if (navigator.geolocation) {
+            setLoading(true); // temporary load indicator for location
             navigator.geolocation.getCurrentPosition(
-                (position) => setLocation(position.coords),
-                (error) => console.error(error)
+                (position) => {
+                    setLocation(position.coords);
+                    setLoading(false);
+                },
+                (error) => {
+                    console.error(error);
+                    setLoading(false);
+                    alert("Location access denied or unavailable. Please select country manually.");
+                }
             );
         }
     };
-
-
 
     const handleFinalSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -123,7 +187,7 @@ export const Auth = () => {
 
         const userData = {
             name,
-            phone,
+            phone: `${country.dialCode}${phone}`,
             role: selectedRole,
             latitude: location?.latitude || null,
             longitude: location?.longitude || null,
@@ -138,17 +202,16 @@ export const Auth = () => {
 
                 if (error) throw error;
             } else {
-                // Mock Mode Simulation
                 console.log('Mock Mode: Simulate Saving to DB:', userData);
                 await new Promise(resolve => setTimeout(resolve, 1500));
             }
 
             setStep('waitlist');
+            setShowConfetti(true);
         } catch (err) {
             console.error('Error saving to Supabase:', err);
-            // Fallback to waitlist anyway for user experience, but log error
-            alert('Note: Could not save to real database (Table likely key missing or table missing). Proceeding locally.');
             setStep('waitlist');
+            setShowConfetti(true);
         } finally {
             setLoading(false);
         }
@@ -220,8 +283,9 @@ export const Auth = () => {
                         <p className="text-green-500">$ status: LOCKED</p>
                         <p className="text-gray-500">$ queue_position: {Math.floor(Math.random() * 500) + 1}</p>
                         <p className="text-gray-500">$ location_access: {location ? 'GRANTED' : 'DENIED'}</p>
+                        <p className="text-gray-500">$ server_region: {country.code}</p>
                         <div className="mt-4 pt-4 border-t border-gray-800 text-xs text-gray-600">
-                            We will contact you at {phone} when beta access opens for your region.
+                            Wait for your invite code at {country.dialCode} {phone}.
                         </div>
                     </motion.div>
                 </motion.div>
@@ -234,7 +298,7 @@ export const Auth = () => {
             {/* Particle Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {[...Array(15)].map((_, i) => (
-                    <Particle delay={i * 0.2} />
+                    <Particle delay={i * 0.2} key={i} />
                 ))}
             </div>
 
@@ -242,9 +306,10 @@ export const Auth = () => {
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
             </div>
+
             <div className="w-full max-w-md relative z-10">
                 <div className="mb-12 text-center">
-                    <Terminal size={40} className="mx-auto mb-4 text-gray-700" />
+                    <img src="/logo.png" alt="Logo" className="mx-auto mb-6 h-16 w-16 object-contain rounded-xl shadow-2xl shadow-green-900/20" />
                     <h1 className="text-2xl font-bold font-sans tracking-tight">THE FARMER COMPANY</h1>
                     <p className="text-xs font-mono text-gray-500 mt-2">SECURE BETA TERMINAL_</p>
                 </div>
@@ -258,24 +323,46 @@ export const Auth = () => {
                             className="space-y-6"
                             onSubmit={handlePhoneSubmit}
                         >
+                            {/* Auto Location / Country Button */}
+                            <div className="flex justify-end mb-2">
+                                <button
+                                    type="button"
+                                    onClick={getLocation}
+                                    className="text-xs flex items-center gap-1 text-green-500 hover:text-green-400 font-mono bg-green-500/10 px-2 py-1 rounded"
+                                >
+                                    <MapPin size={12} />
+                                    <span>AUTO-DETECT LOCATION</span>
+                                </button>
+                            </div>
+
                             <div>
                                 <label className="block text-xs font-mono text-gray-500 mb-2">IDENTIFICATION</label>
-                                <div className="relative">
-                                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
-                                    <input
-                                        type="tel"
-                                        required
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                        placeholder="Enter Mobile Number"
-                                        className="w-full bg-[#111] border border-gray-800 rounded-lg py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                                    />
+                                <div className="flex gap-2">
+                                    <CountrySelect selectedCountry={country} onSelect={setCountry} />
+                                    <div className="relative flex-1">
+                                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                                        <input
+                                            type="tel"
+                                            required
+                                            value={phone}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '');
+                                                if (val.length <= country.phoneLength) setPhone(val);
+                                            }}
+                                            placeholder={`Mobile Number (${country.phoneLength} digits)`}
+                                            className="w-full bg-[#111] border border-gray-800 rounded-lg py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                                        />
+                                    </div>
                                 </div>
                             </div>
+
+                            <Captcha onVerify={() => setIsHuman(true)} />
+
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
+                                className={`w-full font-bold py-4 rounded-lg transition-colors flex items-center justify-center ${isHuman ? 'bg-white text-black hover:bg-gray-200' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                    }`}
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : 'Request OTP'}
                             </button>
@@ -292,16 +379,34 @@ export const Auth = () => {
                         >
                             <div>
                                 <label className="block text-xs font-mono text-gray-500 mb-2">VERIFICATION</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value)}
-                                    placeholder="Enter OTP (Any 4 digits)"
-                                    className="w-full bg-[#111] border border-gray-800 rounded-lg py-4 px-4 text-center text-2xl tracking-widest text-white focus:outline-none focus:border-white transition-all"
-                                    maxLength={4}
-                                />
+                                <div className="text-center mb-6">
+                                    <span className="text-sm text-gray-400">Enter code sent to </span>
+                                    <span className="text-white font-mono">{country.dialCode} {phone}</span>
+                                    <button onClick={() => setStep('phone')} className="ml-2 text-xs text-blue-500 hover:text-blue-400">Edit</button>
+                                </div>
+
+                                <div className="flex justify-center gap-2 mb-2">
+                                    {/* Static Prefix */}
+                                    <div className="h-12 w-16 bg-[#111] border border-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-mono select-none">
+                                        FMR-
+                                    </div>
+                                    {/* 6 Digit Input */}
+                                    {otp.map((digit, idx) => (
+                                        <input
+                                            key={idx}
+                                            id={`otp-${idx}`}
+                                            type="text"
+                                            required
+                                            value={digit}
+                                            onChange={(e) => handleOtpChange(idx, e.target.value)}
+                                            onKeyDown={(e) => handleOtpBackspace(idx, e)}
+                                            className="w-10 h-12 bg-[#111] border border-gray-800 rounded-lg text-center text-xl text-white focus:outline-none focus:border-green-500 transition-all"
+                                            maxLength={1}
+                                        />
+                                    ))}
+                                </div>
                             </div>
+
                             <button
                                 type="submit"
                                 disabled={loading}
@@ -354,12 +459,6 @@ export const Auth = () => {
                                             }}
                                             whileHover={{ scale: 1.02, y: -2 }}
                                             whileTap={{ scale: 0.98 }}
-                                            animate={{
-                                                boxShadow: selectedRole === role.id
-                                                    ? [`0 0 20px ${role.color}20`, `0 0 30px ${role.color}40`, `0 0 20px ${role.color}20`]
-                                                    : 'none'
-                                            }}
-                                            transition={{ duration: 2, repeat: selectedRole === role.id ? Infinity : 0 }}
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div>
@@ -373,20 +472,6 @@ export const Auth = () => {
                                         </motion.div>
                                     ))}
                                 </div>
-                            </div>
-
-                            {/* Location */}
-                            <div
-                                onClick={getLocation}
-                                className={`p-4 rounded-lg border border-dashed cursor-pointer flex items-center justify-center gap-2 transition-all ${location
-                                    ? 'border-green-500 bg-green-500/10 text-green-500'
-                                    : 'border-gray-700 text-gray-500 hover:text-white hover:border-white'
-                                    }`}
-                            >
-                                <MapPin size={20} />
-                                <span className="text-sm font-mono">
-                                    {location ? `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}` : 'GRANT LOCATION ACCESS'}
-                                </span>
                             </div>
 
                             <button
