@@ -21,6 +21,18 @@ interface ProduceItem {
 
 const produceData: ProduceItem[] = [
     {
+        id: 'watermelon',
+        name: 'Watermelon',
+        image: `${import.meta.env.BASE_URL}assets/watermelon.png`,
+        basePrice: 35,
+        unit: 'per kg',
+        available: 3500,
+        maxAvailable: 5000,
+        quality: 'A+',
+        demand: 'High',
+        trend: 4.5
+    },
+    {
         id: 'coconut',
         name: 'Coconuts',
         image: `${import.meta.env.BASE_URL}assets/coconut.png`,
