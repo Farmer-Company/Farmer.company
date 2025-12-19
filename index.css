@@ -11,6 +11,7 @@
 @layer base {
   body {
     @apply bg-black text-white antialiased transition-colors duration-300;
+    cursor: none;
   }
 }
 

@@ -169,39 +169,7 @@ const ControlHeader = () => {
     );
 };
 
-const TechStackMarquee = () => {
-    const stack = [
-        { name: "React", version: "18.3" },
-        { name: "TypeScript", version: "5.4" },
-        { name: "Three.js", version: "r160" },
-        { name: "R3F", version: "8.15" },
-        { name: "Tailwind", version: "3.4" },
-        { name: "Framer Motion", version: "11.0" },
-        { name: "Vite", version: "5.1" },
-        { name: "Supabase", version: "2.39" }
-    ];
 
-    return (
-        <div className="w-full bg-neutral-900/50 border-y border-white/5 overflow-hidden py-4 mb-16 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10" />
-
-            <div className="flex gap-16 animate-marquee whitespace-nowrap">
-                {[...Array(4)].map((_, i) => (
-                    <div key={i} className="flex gap-16 items-center">
-                        {stack.map((tech, j) => (
-                            <div key={j} className="flex items-center gap-2 group cursor-default">
-                                <span className="w-1.5 h-1.5 rounded-full bg-gray-700 group-hover:bg-blue-500 transition-colors" />
-                                <span className="text-gray-400 font-mono text-sm group-hover:text-white transition-colors">
-                                    {tech.name} <span className="text-gray-600 text-xs">v{tech.version}</span>
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
 
 const items = [
     {
@@ -290,7 +258,7 @@ export const TechnologySection = () => {
                 </p>
             </div>
 
-            <TechStackMarquee />
+
 
             <BentoGrid className="max-w-7xl mx-auto relative z-10">
                 {items.map((item, i) => (

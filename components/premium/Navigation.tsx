@@ -210,10 +210,6 @@ export const Navigation = () => {
             </ul>
 
             <div className="nav-auth-container flex items-center gap-6">
-                <Link to="/pricing" className="text-xs text-gray-400 hover:text-white transition-colors">
-                    Pricing
-                </Link>
-
                 <div className="nav-auth" onClick={() => window.location.href = '/app/auth'}>
                     <div className="w-2 h-2 rounded-full bg-red-500"></div>
                     GUEST_USER

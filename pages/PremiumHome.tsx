@@ -25,6 +25,7 @@ export const PremiumHome = () => {
                 />
                 <ContentSection
                     id="exchange"
+                    data-cursor-style="hex"
                     title="EXCHANGE"
                     text="A frictionless marketplace connecting global demand with local supply."
                     subtext="Connect with us to source quality produce with full transparency."
@@ -32,11 +33,12 @@ export const PremiumHome = () => {
                     ctaLabel="Enter Marketplace"
                     ctaLink="/app/auth?role=buyer"
                 />
-                <div id="marketplace">
+                <div id="marketplace" data-cursor-style="hex">
                     <ProduceMarketplace />
                 </div>
                 <ContentSection
                     id="routemaster"
+                    data-cursor-style="hex"
                     title="ROUTEMASTER"
                     text="Optimizing logistics to reduce waste and ensure freshness from farm to fork."
                     subtext="The backbone of our supply chain."

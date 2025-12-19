@@ -6,8 +6,11 @@ import { Hero } from './components/Hero';
 import { TechnologySection } from './components/TechnologySection';
 import { MasterplanSection } from './components/MasterplanSection';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { Preloader } from './components/ui/Preloader';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SEO } from './components/SEO';
+import { CustomCursor } from './components/ui/CustomCursor';
+import { SiteProtection } from './components/SiteProtection';
 
 // Lazy Load Pages for Performance
 const Privacy = lazy(() => import('./pages/Privacy').then(module => ({ default: module.Privacy })));
@@ -27,7 +30,6 @@ const SupplyListing = lazy(() => import('./pages/app/farmer/SupplyListing').then
 const Market = lazy(() => import('./pages/app/buyer/Market').then(module => ({ default: module.Market })));
 const FleetView = lazy(() => import('./pages/app/logistics/FleetView').then(module => ({ default: module.FleetView })));
 const PremiumHome = lazy(() => import('./pages/PremiumHome').then(module => ({ default: module.PremiumHome })));
-const Pricing = lazy(() => import('./pages/Pricing').then(module => ({ default: module.Pricing })));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -50,7 +52,10 @@ const LandingPage = () => (
 function App() {
   return (
     <ErrorBoundary>
+      <Preloader />
       <Router basename={import.meta.env.BASE_URL}>
+        <CustomCursor />
+        <SiteProtection />
         <ScrollToTop />
         <div className="min-h-screen bg-wild-sand dark:bg-cod-gray font-sans selection:bg-danube-blue selection:text-white transition-colors duration-300">
           <Suspense fallback={<LoadingSpinner />}>
@@ -67,7 +72,6 @@ function App() {
                 <Route path="/privacy" element={<><SEO title="Privacy Policy" /><Privacy /></>} />
                 <Route path="/terms" element={<><SEO title="Terms of Service" /><Terms /></>} />
                 <Route path="/contact" element={<><SEO title="Contact Us" /><Contact /></>} />
-                <Route path="/pricing" element={<Pricing />} />
               </Route>
 
               {/* Platform Application Routes */}
