@@ -12,21 +12,74 @@ export const MegaFooter = () => {
                         <span className="text-danube-blue">●</span> COMING SOON
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {[
-                            { title: 'Drone Scout v2', date: 'Q1 2026', img: 'bg-gray-800' },
-                            { title: 'Marketplace API', date: 'Q2 2026', img: 'bg-gray-800' },
-                            { title: 'Logistics AI', date: 'In Beta', img: 'bg-gray-800' },
-                            { title: 'Farmer Pay', date: 'Coming Soon', img: 'bg-gray-800' },
-                        ].map((item, i) => (
-                            <div key={i} className="group cursor-pointer">
-                                <div className={`aspect-video ${item.img} rounded-lg mb-4 border border-white/10 group-hover:border-white/40 transition-colors relative overflow-hidden`}>
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
-                                        <span className="text-xs font-mono text-danube-blue">{item.date}</span>
+                        {/* Drone Scout v2 */}
+                        <div className="group cursor-pointer">
+                            <div className="aspect-video bg-neutral-900 rounded-lg mb-4 border border-white/10 group-hover:border-danube-blue/50 transition-colors relative overflow-hidden">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-16 h-16 rounded-full border border-danube-blue/20 relative">
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent to-danube-blue/40 animate-[spin_3s_linear_infinite] rounded-full origin-center"></div>
+                                        <div className="absolute inset-2 rounded-full bg-neutral-900 z-10"></div>
+                                        <div className="absolute inset-0 flex items-center justify-center z-20">
+                                            <div className="w-2 h-2 bg-danube-blue rounded-full animate-pulse"></div>
+                                        </div>
                                     </div>
                                 </div>
-                                <h4 className="font-bold text-sm group-hover:text-danube-blue transition-colors">{item.title}</h4>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4 z-30">
+                                    <span className="text-xs font-mono text-danube-blue">Q1 2026</span>
+                                </div>
                             </div>
-                        ))}
+                            <h4 className="font-bold text-sm group-hover:text-danube-blue transition-colors">Drone Scout v2</h4>
+                        </div>
+
+                        {/* Marketplace API */}
+                        <div className="group cursor-pointer">
+                            <div className="aspect-video bg-neutral-900 rounded-lg mb-4 border border-white/10 group-hover:border-purple-500/50 transition-colors relative overflow-hidden">
+                                <div className="absolute inset-0 flex items-center justify-center gap-1">
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="h-8 w-1 bg-purple-500/20 rounded-full overflow-hidden">
+                                            <div className="h-full w-full bg-purple-500 animate-[translate-y_1.5s_ease-in-out_infinite]" style={{ animationDelay: `${i * 0.2}s` }}></div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4 z-30">
+                                    <span className="text-xs font-mono text-purple-400">Q2 2026</span>
+                                </div>
+                            </div>
+                            <h4 className="font-bold text-sm group-hover:text-purple-400 transition-colors">Marketplace API</h4>
+                        </div>
+
+                        {/* Logistics AI */}
+                        <div className="group cursor-pointer">
+                            <div className="aspect-video bg-neutral-900 rounded-lg mb-4 border border-white/10 group-hover:border-green-500/50 transition-colors relative overflow-hidden">
+                                <svg className="absolute inset-0 w-full h-full opacity-40">
+                                    <path d="M10,80 Q50,10 100,50 T200,80" fill="none" stroke="#22c55e" strokeWidth="2" strokeDasharray="4 4" className="animate-[dash_20s_linear_infinite]" />
+                                </svg>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-green-500/10 p-2 rounded-full border border-green-500/30">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4 z-30">
+                                    <span className="text-xs font-mono text-green-400">In Beta</span>
+                                </div>
+                            </div>
+                            <h4 className="font-bold text-sm group-hover:text-green-400 transition-colors">Logistics AI</h4>
+                        </div>
+
+                        {/* Farmer Pay */}
+                        <div className="group cursor-pointer">
+                            <div className="aspect-video bg-neutral-900 rounded-lg mb-4 border border-white/10 group-hover:border-yellow-500/50 transition-colors relative overflow-hidden">
+                                <div className="absolute inset-6 rounded bg-gradient-to-br from-yellow-500/20 to-transparent border border-yellow-500/20 flex flex-col justify-between p-2">
+                                    <div className="w-4 h-3 bg-yellow-500/40 rounded-sm"></div>
+                                    <div className="space-y-1">
+                                        <div className="h-1 w-full bg-white/10 rounded"></div>
+                                        <div className="h-1 w-2/3 bg-white/10 rounded"></div>
+                                    </div>
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4 z-30">
+                                    <span className="text-xs font-mono text-yellow-400">Coming Soon</span>
+                                </div>
+                            </div>
+                            <h4 className="font-bold text-sm group-hover:text-yellow-400 transition-colors">Farmer Pay</h4>
+                        </div>
                     </div>
                 </div>
 

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const OriginHeader = () => {
     const [quality, setQuality] = useState(85);
+    const [lines, setLines] = useState<string[]>([]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -14,56 +15,35 @@ const OriginHeader = () => {
                 const change = Math.random() * 10 - 5;
                 return Math.max(80, Math.min(99, prev + change));
             });
+            const newLog = `[${new Date().toLocaleTimeString()}] SAMPLE_${Math.floor(Math.random() * 1000)}: GRADE_A`;
+            setLines(prev => [newLog, ...prev.slice(0, 4)]);
         }, 2000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800 border border-white/10 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-grid-white/[0.05] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
+        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800 border-2 border-green-500/20 relative overflow-hidden group hover:border-green-500/40 transition-colors">
+            <div className="absolute inset-0 bg-grid-white/[0.05]"></div>
+
+            {/* Terminal Output */}
+            <div className="absolute top-2 left-2 z-10 font-mono text-[10px] text-green-500/80 leading-tight">
+                <div className="border-b border-green-500/20 pb-1 mb-1">ORIGIN_NET.SYS</div>
+                {lines.map((line, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>{line}</motion.div>
+                ))}
+            </div>
 
             {/* Scanning Animation */}
             <motion.div
-                className="absolute inset-0 bg-gradient-to-b from-transparent via-green-500/20 to-transparent h-20"
-                animate={{
-                    y: ['-100%', '200%']
-                }}
-                transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "linear"
-                }}
+                className="absolute inset-0 bg-gradient-to-b from-transparent via-green-500/10 to-transparent h-20"
+                animate={{ y: ['-100%', '200%'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
             />
 
-            <div className="absolute inset-0 flex items-center justify-center">
-                <div className="z-10 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-green-500/30 flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-xs font-mono text-green-400">AI GRADING: {quality.toFixed(1)}%</span>
-                </div>
+            <div className="absolute bottom-2 right-2 flex items-center gap-2 bg-black/80 px-2 py-1 rounded border border-green-500/30">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="text-[10px] font-mono text-green-400">{quality.toFixed(1)}% QUALITY</span>
             </div>
-
-            {/* Floating Particles */}
-            {[...Array(5)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute w-1 h-1 bg-green-500 rounded-full"
-                    initial={{
-                        x: Math.random() * 100 + '%',
-                        y: Math.random() * 100 + '%'
-                    }}
-                    animate={{
-                        y: [null, Math.random() * 100 + '%'],
-                        opacity: [0.2, 0.8, 0.2]
-                    }}
-                    transition={{
-                        duration: Math.random() * 3 + 2,
-                        repeat: Infinity,
-                        delay: i * 0.5
-                    }}
-                />
-            ))}
-
-            <Leaf className="absolute -right-4 -bottom-4 text-green-500/10 w-40 h-40 group-hover:scale-110 transition-transform duration-500" />
         </div>
     );
 };
@@ -81,179 +61,143 @@ const ExchangeHeader = () => {
     }, []);
 
     return (
-        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-900 border border-white/10 relative overflow-hidden flex-col p-4 justify-between">
-            {/* Animated Background Grid */}
-            <div className="absolute inset-0 opacity-10">
-                {[...Array(20)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute w-full h-px bg-blue-500"
-                        style={{ top: `${(i + 1) * 5}%` }}
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: [0, 1, 0] }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: i * 0.1
-                        }}
-                    />
-                ))}
+        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-900 border-2 border-blue-500/20 relative overflow-hidden flex-col p-4 justify-between group hover:border-blue-500/40 transition-colors">
+            <div className="absolute inset-0 bg-grid-white/[0.02]"></div>
+
+            <div className="flex justify-between items-center relative z-10 border-b border-blue-500/20 pb-2">
+                <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-1 rounded">EXCHANGE</span>
+                    <span className="w-1 h-1 bg-blue-500 rounded-full animate-ping"></span>
+                </div>
+                <Activity className="w-3 h-3 text-blue-500" />
             </div>
 
-            <div className="flex justify-between items-center relative z-10">
-                <span className="text-xs font-mono text-gray-500">MKT_VOL</span>
-                <Activity className="w-4 h-4 text-blue-500" />
-            </div>
-            <div className="flex items-baseline gap-1 relative z-10">
-                <motion.span
-                    className="text-2xl font-bold text-white"
-                    key={volume}
-                    initial={{ y: -10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                >
-                    {volume.toLocaleString()}
-                </motion.span>
-                <span className={`text-xs font-mono ${trend >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+            <div className="flex items-end justify-between relative z-10 mt-2">
+                <div>
+                    <div className="text-[10px] text-gray-500 font-mono mb-1">24H VOLUME</div>
+                    <motion.div
+                        className="text-2xl font-bold text-white font-mono tracking-tighter"
+                        key={volume}
+                        initial={{ y: -5, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                    >
+                        {volume.toLocaleString()}
+                    </motion.div>
+                </div>
+                <span className={`text-xs font-mono px-2 py-1 rounded bg-white/5 ${trend >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {trend >= 0 ? '+' : ''}{trend.toFixed(1)}%
                 </span>
             </div>
 
-            {/* Animated Progress Bar */}
-            <div className="w-full bg-gray-800 h-1 mt-2 rounded-full overflow-hidden relative z-10">
-                <motion.div
-                    initial={{ width: "30%" }}
-                    animate={{ width: "75%" }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
-                />
+            {/* Micro-chart */}
+            <div className="flex gap-0.5 items-end h-8 mt-2 opacity-50">
+                {[...Array(10)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="flex-1 bg-blue-500 rounded-t-sm"
+                        animate={{ height: `${Math.random() * 100}%` }}
+                        transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", delay: i * 0.1 }}
+                    />
+                ))}
             </div>
         </div>
     );
 };
 
 const RouteHeader = () => {
-    const [activeRoutes, setActiveRoutes] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveRoutes(Math.floor(Math.random() * 36));
-        }, 1500);
-        return () => clearInterval(interval);
-    }, []);
-
     return (
-        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-900 border border-white/10 relative overflow-hidden">
-            <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 gap-0.5 opacity-20 transform -skew-x-12 scale-150">
-                {Array.from({ length: 36 }).map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="bg-gray-700"
-                        animate={{
-                            backgroundColor: i === activeRoutes ? '#8A2BE2' : '#374151',
-                            scale: i === activeRoutes ? 1.2 : 1
-                        }}
-                        transition={{ duration: 0.3 }}
-                    />
-                ))}
-            </div>
+        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-900 border-2 border-purple-500/20 relative overflow-hidden group hover:border-purple-500/40 transition-colors">
+            {/* Hex Grid Background */}
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #8A2BE2 1px, transparent 0)', backgroundSize: '20px 20px' }}></div>
 
-            {/* Route Lines Animation */}
-            <svg className="absolute inset-0 w-full h-full opacity-30">
+            {/* Animated Path */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none">
                 <motion.path
-                    d="M 0,50 Q 50,10 100,50 T 200,50"
+                    d="M10,80 Q50,10 100,50 T200,80"
+                    fill="none"
                     stroke="#8A2BE2"
                     strokeWidth="2"
-                    fill="none"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    strokeDasharray="4 4"
+                    animate={{ strokeDashoffset: [0, -20] }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="opacity-60"
                 />
             </svg>
 
-            <div className="absolute bottom-4 left-4 z-10">
+            {/* Nodes */}
+            {[20, 50, 80].map((left, i) => (
+                <div key={i} className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-purple-500 rounded-full border border-black shadow-[0_0_10px_#8A2BE2]" style={{ left: `${left}%` }} />
+            ))}
+
+            <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center z-10 bg-neutral-900/90 border border-purple-500/20 p-2 rounded">
                 <div className="flex items-center gap-2 text-purple-400">
-                    <Truck className="w-5 h-5" />
-                    <span className="text-xs font-bold tracking-widest">OPTIMIZING...</span>
+                    <Truck className="w-3 h-3" />
+                    <span className="text-[10px] font-bold tracking-widest font-mono">ROUTE_OPT</span>
                 </div>
+                <span className="text-[10px] text-green-400 font-mono">EFF: 98%</span>
             </div>
         </div>
     );
 };
 
 const ControlHeader = () => {
-    const [nodes, setNodes] = useState(4200);
-    const [latency, setLatency] = useState(12);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNodes(prev => prev + Math.floor(Math.random() * 20 - 5));
-            setLatency(Math.floor(Math.random() * 10 + 8));
-        }, 2000);
-        return () => clearInterval(interval);
-    }, []);
-
     return (
-        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-900 border border-white/10 relative overflow-hidden group">
-            {/* Pulsing Globe */}
-            <motion.div
-                className="absolute top-0 right-0 p-4"
-                animate={{
-                    scale: [1, 1.05, 1]
-                }}
-                transition={{
-                    duration: 3,
-                    repeat: Infinity
-                }}
-            >
-                <Globe className="w-20 h-20 text-gray-800 group-hover:text-blue-900/40 transition-colors duration-500" />
-            </motion.div>
+        <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-900 border-2 border-gray-700/50 relative overflow-hidden group hover:border-white/20 transition-colors">
+            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,.2)_50%,transparent_75%,transparent_100%)] bg-[length:4px_4px]" />
 
-            {/* Connection Lines */}
-            <div className="absolute inset-0">
-                {[...Array(8)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute w-px h-20 bg-gradient-to-b from-blue-500/50 to-transparent"
-                        style={{
-                            left: `${(i + 1) * 12}%`,
-                            top: '20%'
-                        }}
-                        animate={{
-                            opacity: [0.2, 0.8, 0.2],
-                            height: [60, 80, 60]
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: i * 0.2
-                        }}
-                    />
-                ))}
+            <div className="absolute inset-0 flex items-center justify-center opacity-30">
+                <Globe className="w-32 h-32 text-white animate-[spin_20s_linear_infinite]" strokeWidth={0.5} />
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-black/80 to-transparent z-10">
-                <div className="flex gap-4 font-mono text-xs text-gray-400">
-                    <div className="flex flex-col gap-1">
-                        <span>SYS: <span className="text-green-500">ONLINE</span></span>
-                        <motion.span
-                            key={latency}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            LAT: {latency}ms
-                        </motion.span>
+            <div className="absolute top-0 right-0 p-4 font-mono text-xs text-right">
+                <div className="text-gray-500">SYSTEM_STATUS</div>
+                <div className="text-green-500 font-bold blink">ONLINE</div>
+            </div>
+
+            <div className="absolute bottom-4 left-4 right-4 grid grid-cols-4 gap-2">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="h-1 bg-gray-700 rounded-full overflow-hidden">
+                        <motion.div
+                            className="h-full bg-white"
+                            animate={{ width: ["20%", "80%", "40%"] }}
+                            transition={{ duration: 2 + i, repeat: Infinity }}
+                        />
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <motion.span
-                            key={nodes}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            NODES: {nodes.toLocaleString()}
-                        </motion.span>
-                        <span>UPTIME: 99.9%</span>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const TechStackMarquee = () => {
+    const stack = [
+        { name: "React", version: "18.3" },
+        { name: "TypeScript", version: "5.4" },
+        { name: "Three.js", version: "r160" },
+        { name: "R3F", version: "8.15" },
+        { name: "Tailwind", version: "3.4" },
+        { name: "Framer Motion", version: "11.0" },
+        { name: "Vite", version: "5.1" },
+        { name: "Supabase", version: "2.39" }
+    ];
+
+    return (
+        <div className="w-full bg-neutral-900/50 border-y border-white/5 overflow-hidden py-4 mb-16 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10" />
+
+            <div className="flex gap-16 animate-marquee whitespace-nowrap">
+                {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex gap-16 items-center">
+                        {stack.map((tech, j) => (
+                            <div key={j} className="flex items-center gap-2 group cursor-default">
+                                <span className="w-1.5 h-1.5 rounded-full bg-gray-700 group-hover:bg-blue-500 transition-colors" />
+                                <span className="text-gray-400 font-mono text-sm group-hover:text-white transition-colors">
+                                    {tech.name} <span className="text-gray-600 text-xs">v{tech.version}</span>
+                                </span>
+                            </div>
+                        ))}
                     </div>
-                </div>
+                ))}
             </div>
         </div>
     );
@@ -345,6 +289,9 @@ export const TechnologySection = () => {
                     Our vertically integrated stack digitizes every atom of the produce economy.
                 </p>
             </div>
+
+            <TechStackMarquee />
+
             <BentoGrid className="max-w-7xl mx-auto relative z-10">
                 {items.map((item, i) => (
                     <BentoGridItem
