@@ -23,7 +23,7 @@ const produceData: ProduceItem[] = [
     {
         id: 'coconut',
         name: 'Coconuts',
-        image: '/assets/coconut.png',
+        image: `${import.meta.env.BASE_URL}assets/coconut.png`,
         basePrice: 45,
         unit: 'per 100 units',
         available: 8500,
@@ -35,7 +35,7 @@ const produceData: ProduceItem[] = [
     {
         id: 'mango',
         name: 'Mango',
-        image: '/assets/mango.png',
+        image: `${import.meta.env.BASE_URL}assets/mango.png`,
         basePrice: 120,
         unit: 'per kg',
         available: 6200,
@@ -47,7 +47,7 @@ const produceData: ProduceItem[] = [
     {
         id: 'pineapple',
         name: 'Pineapple',
-        image: '/assets/pineapple.png',
+        image: `${import.meta.env.BASE_URL}assets/pineapple.png`,
         basePrice: 85,
         unit: 'per dozen',
         available: 4800,
