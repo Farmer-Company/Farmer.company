@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Twitter, Instagram, Youtube, Linkedin, Globe } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, Globe, Github } from 'lucide-react';
 
 export const MegaFooter = () => {
     return (
@@ -86,11 +86,24 @@ export const MegaFooter = () => {
                         <ul className="space-y-3 text-sm text-gray-400">
                             <li><a href="#" className="hover:text-white transition-colors">iOS App</a></li>
                             <li><a href="#" className="hover:text-white transition-colors">Android App</a></li>
-                            <li className="flex gap-4 mt-4">
+                            <li className="flex flex-wrap gap-4 mt-4">
                                 <Twitter size={20} className="hover:text-danube-blue cursor-pointer" />
                                 <Instagram size={20} className="hover:text-pink-500 cursor-pointer" />
                                 <Linkedin size={20} className="hover:text-blue-600 cursor-pointer" />
                                 <Youtube size={20} className="hover:text-red-500 cursor-pointer" />
+                                <Github size={20} className="hover:text-white cursor-pointer" />
+
+                                {/* Discord */}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-indigo-500 cursor-pointer"><circle cx="9" cy="12" r="1" /><circle cx="15" cy="12" r="1" /><path d="M7.5 7.5c3.5-1 5.5-1 9 0" /><path d="M7 16.5c3.5 1 5.5 1 9 0" /><path d="M2 9h20" /><path d="M12 2a10 10 0 0 1 10 10v10H2V12a10 10 0 0 1 10-10z" /></svg>
+
+                                {/* Bluesky */}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-blue-400 cursor-pointer"><path d="M12 12c-2-3-5.5-8-8-8 3 5 1 9 1 9s2-2 4-5c.5-1 .5-2 0-3 2 3 5.5 8 8 8-3-5-1-9-1-9s-2 2-4 5c-.5 1-.5 2 0 3-2-3-5.5-8-8-8z" /><path d="M12 12c2 3 5.5 8 8 8-3-5-1-9-1-9s-2 2-4 5c-.5 1-.5 2 0 3-2-3-5.5-8-8-8 3 5 1 9 1 9s2-2 4-5c.5-1 .5-2 0-3 2 3 5.5 8 8 8z" /></svg>
+
+                                {/* Snapchat */}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-yellow-400 cursor-pointer"><path d="M12 2a9 9 0 0 1 9 9c0 1.5-.5 3-1.5 4-.5.5-1 1.5.5 2.5 1.5 1 1 2.5 1 4 0 0-1-.5-1.5-3 .5s-3-2-6-2-5.5 1.5-6 2c-.5.5-2 0-2-1 .5-.5 1-2 .5-2.5C6 14 5.5 12.5 5.5 11a9 9 0 0 1 6.5-9z" /></svg>
+
+                                {/* Reddit */}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-orange-500 cursor-pointer"><circle cx="12" cy="12" r="10" /><path d="M17 13c0 2-2.5 3-5 3s-5-1-5-3" /><line x1="17" y1="9" x2="17" y2="9.01" /><line x1="7" y1="9" x2="7" y2="9.01" /></svg>
                             </li>
                         </ul>
                     </div>
