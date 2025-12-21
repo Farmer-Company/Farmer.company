@@ -9,7 +9,16 @@ create table public.users (
   latitude float,
   longitude float,
   address text,
-  avatar_url text
+  avatar_url text,
+  
+  -- Trust & Identity Fields
+  is_verified boolean default false,
+  rating float default 0, -- 0.0 to 5.0
+  reputation_score int default 0, -- 0 to 100
+  badges jsonb default '[]'::jsonb, -- e.g. ["verified", "top_seller", "organic"]
+  bio text,
+  total_volume_kg float default 0,
+  joined_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 -- PRODUCTS: Catalog of available produce types

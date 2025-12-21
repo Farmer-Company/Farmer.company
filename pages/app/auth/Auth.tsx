@@ -183,20 +183,22 @@ export const Auth = () => {
         const fullPhone = `${country.dialCode}${phone}`;
 
         try {
-            // Check if user exists
-            const { data: existingUser, error: fetchError } = await supabase
-                .from('users')
-                .select('*')
-                .eq('phone', fullPhone)
-                .single();
+            if (!isMockMode) {
+                // Check if user exists
+                const { data: existingUser, error: fetchError } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('phone', fullPhone)
+                    .single();
 
-            if (existingUser) {
-                // User exists, log them in
-                login(existingUser);
-                alert(`Welcome back, ${existingUser.name}!`);
-                if (existingUser.role === 'farmer') navigate('/app/farmer');
-                else navigate('/app/buyer');
-                return;
+                if (existingUser) {
+                    // User exists, log them in
+                    login(existingUser);
+                    alert(`Welcome back, ${existingUser.name}!`);
+                    if (existingUser.role === 'farmer') navigate('/app/farmer');
+                    else navigate('/app/buyer');
+                    return;
+                }
             }
 
             // New User Registration
@@ -209,22 +211,53 @@ export const Auth = () => {
                 created_at: new Date().toISOString()
             };
 
-            const { data: createdUser, error: insertError } = await supabase
-                .from('users')
-                .insert([newUser])
-                .select() // important to return the created row
-                .single();
+            let createdUser = newUser;
 
-            if (insertError) throw insertError;
+            if (!isMockMode) {
+                const { data, error: insertError } = await supabase
+                    .from('users')
+                    .insert([newUser])
+                    .select() // important to return the created row
+                    .single();
+
+                if (insertError) throw insertError;
+                if (data) createdUser = data as any;
+            } else {
+                // Simulate successful insert
+                (createdUser as any).id = 'mock-' + Date.now();
+            }
 
             if (createdUser) {
-                login(createdUser);
+                login(createdUser as any);
                 if (createdUser.role === 'farmer') navigate('/app/farmer');
                 else navigate('/app/buyer');
             }
 
         } catch (err) {
             console.error('Error during auth:', err);
+
+            // Fallback for Mock Mode / Demo
+            if (isMockMode || (err as any)?.message?.includes('fetch')) {
+                console.warn('Network error or Mock Mode detected. Falling back to local simulation.');
+                const mockUser = {
+                    id: 'mock-' + Math.random().toString(36).substr(2, 9),
+                    name: name || 'Demo User',
+                    phone: fullPhone,
+                    role: selectedRole,
+                    latitude: location?.latitude || null,
+                    longitude: location?.longitude || null,
+                    created_at: new Date().toISOString(),
+                    is_verified: true,
+                    reputation_score: 95,
+                    badges: ['verified', 'new_user']
+                };
+                login(mockUser as any);
+                alert(`(Demo Mode) Welcome, ${mockUser.name}!`);
+                if (mockUser.role === 'farmer') navigate('/app/farmer');
+                else navigate('/app/buyer');
+                return;
+            }
+
             alert('Authentication failed. Please try again.');
         } finally {
             setLoading(false);

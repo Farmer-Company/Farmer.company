@@ -1,8 +1,9 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDownRight, Filter } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { supabase } from '../../../lib/supabase';
 import { useAuthStore } from '../../../store/authStore';
+import { TrustBadge } from '../../../components/identity/TrustBadge';
 
 interface OrderRowProps {
     listing: any;
@@ -12,7 +13,16 @@ interface OrderRowProps {
 const OrderRow: React.FC<OrderRowProps> = ({ listing, onBuy }) => (
     <div className="grid grid-cols-6 gap-4 p-3 border-b border-white/5 hover:bg-white/5 transition-colors text-sm font-mono cursor-pointer group">
         <div className="text-gray-400">#{listing.id.slice(0, 4)}</div>
-        <div className="text-white font-sans font-bold">{listing.product?.name || 'Unknown'}</div>
+
+        {/* Crop & Farmer */}
+        <div className="flex flex-col">
+            <span className="text-white font-sans font-bold">{listing.product?.name || 'Unknown'}</span>
+            <Link to={`/app/profile/${listing.farmer?.id}`} className="text-[10px] text-gray-500 hover:text-danube-blue flex items-center gap-1 mt-0.5" onClick={(e) => e.stopPropagation()}>
+                {listing.farmer?.name || 'Unknown Farmer'}
+                {listing.farmer?.is_verified && <TrustBadge type="verified" />}
+            </Link>
+        </div>
+
         <div className="text-gray-300">{listing.grade}</div>
         <div className="text-white">{listing.quantity_kg} kg</div>
         <div className="text-danube-blue">₹ {listing.price_per_kg}</div>
@@ -31,7 +41,7 @@ export const OrderBook = () => {
     const fetchListings = async () => {
         const { data } = await supabase
             .from('listings')
-            .select('*, product:products(*)')
+            .select('*, product:products(*), farmer:users(*)')
             .eq('status', 'active')
             .order('created_at', { ascending: false });
         if (data) setListings(data);

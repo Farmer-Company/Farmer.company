@@ -29,6 +29,7 @@ const FarmerDashboard = lazy(() => import('./pages/app/farmer/Dashboard').then(m
 const SupplyListing = lazy(() => import('./pages/app/farmer/SupplyListing').then(module => ({ default: module.SupplyListing })));
 const Market = lazy(() => import('./pages/app/buyer/Market').then(module => ({ default: module.Market })));
 const FleetView = lazy(() => import('./pages/app/logistics/FleetView').then(module => ({ default: module.FleetView })));
+const UserProfile = lazy(() => import('./pages/app/profile/UserProfile').then(module => ({ default: module.UserProfile })));
 const PremiumHome = lazy(() => import('./pages/PremiumHome').then(module => ({ default: module.PremiumHome })));
 
 // Scroll to top on route change
@@ -80,6 +81,8 @@ function App() {
               <Route path="/app" element={<PlatformLayout />}>
                 <Route path="farmer" element={<><SEO title="Farmer Portal" /><FarmerDashboard /></>} />
                 <Route path="farmer/new-listing" element={<><SEO title="New Listing" /><SupplyListing /></>} />
+
+                <Route path="profile/:id" element={<><SEO title="Identity" /><UserProfile /></>} />
 
                 <Route path="buyer" element={<><SEO title="Exchange Market" /><Market /></>} />
                 <Route path="logistics" element={<><SEO title="RouteMaster" /><FleetView /></>} />

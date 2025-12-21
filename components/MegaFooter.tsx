@@ -141,28 +141,19 @@ export const MegaFooter = () => {
                             <li><a href="#" className="hover:text-white transition-colors">Android App</a></li>
                             <li className="flex flex-wrap gap-4 mt-4">
                                 {/* X (Twitter) */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="hover:text-white cursor-pointer">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                </svg>
+                                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                                </a>
 
-                                <Instagram size={20} className="hover:text-pink-500 cursor-pointer" />
-                                <Linkedin size={20} className="hover:text-blue-600 cursor-pointer" />
-                                <Youtube size={20} className="hover:text-red-500 cursor-pointer" />
-                                <Github size={20} className="hover:text-white cursor-pointer" />
+                                <a href="#" className="text-gray-400 hover:text-pink-500 transition-colors"><Instagram size={20} /></a>
+                                <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors"><Linkedin size={20} /></a>
+                                <a href="#" className="text-gray-400 hover:text-red-500 transition-colors"><Youtube size={20} /></a>
+                                <a href="#" className="text-gray-400 hover:text-white transition-colors"><Github size={20} /></a>
 
-                                {/* Discord - Official Clyde */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor" className="hover:text-indigo-500 cursor-pointer">
-                                    <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c1.24-23.28-5.83-49-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
-                                </svg>
-
-                                {/* Bluesky */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-blue-400 cursor-pointer"><path d="M12 12c-2-3-5.5-8-8-8 3 5 1 9 1 9s2-2 4-5c.5-1 .5-2 0-3 2 3 5.5 8 8 8-3-5-1-9-1-9s-2 2-4 5c-.5 1-.5 2 0 3-2-3-5.5-8-8-8z" /><path d="M12 12c2 3 5.5 8 8 8-3-5-1-9-1-9s-2 2-4 5c-.5 1-.5 2 0 3-2-3-5.5-8-8-8 3 5 1 9 1 9s2-2 4-5c.5-1 .5-2 0-3 2 3 5.5 8 8 8z" /></svg>
-
-                                {/* Snapchat */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-yellow-400 cursor-pointer"><path d="M12 2a9 9 0 0 1 9 9c0 1.5-.5 3-1.5 4-.5.5-1 1.5.5 2.5 1.5 1 1 2.5 1 4 0 0-1-.5-1.5-3 .5s-3-2-6-2-5.5 1.5-6 2c-.5.5-2 0-2-1 .5-.5 1-2 .5-2.5C6 14 5.5 12.5 5.5 11a9 9 0 0 1 6.5-9z" /></svg>
-
-                                {/* Reddit */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="hover:text-orange-500 cursor-pointer"><circle cx="12" cy="12" r="10" /><path d="M17 13c0 2-2.5 3-5 3s-5-1-5-3" /><line x1="17" y1="9" x2="17" y2="9.01" /><line x1="7" y1="9" x2="7" y2="9.01" /></svg>
+                                {/* Discord */}
+                                <a href="#" className="text-gray-400 hover:text-indigo-500 transition-colors">
+                                    <svg viewBox="0 0 127.14 96.36" fill="currentColor" width="20" height="20"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c1.24-23.28-5.83-49-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" /></svg>
+                                </a>
                             </li>
                         </ul>
                     </div>

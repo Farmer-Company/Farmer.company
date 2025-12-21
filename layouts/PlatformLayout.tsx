@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { LayoutDashboard, ShoppingCart, Truck, LogOut, Settings, Sprout } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Truck, LogOut, Settings, Sprout, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SidebarItem = ({ icon: Icon, label, path, active, delay }: { icon: any, label: string, path: string, active: boolean, delay?: number }) => (
@@ -67,9 +67,11 @@ export const PlatformLayout = () => {
                 </div>
 
                 <div className="p-4 border-t border-white/10">
-                    <div className="flex items-center space-x-3 px-4 py-3 text-gray-500 hover:text-white cursor-pointer transition-colors">
-                        <Settings size={18} />
-                        <span className="text-sm font-mono">SYSTEM</span>
+                    <div className="flex items-center space-x-3 px-4 py-3 text-gray-500 hover:text-white cursor-pointer transition-colors"
+                        onClick={() => window.location.href = `/app/profile/${user?.id}`}
+                    >
+                        <User size={18} />
+                        <span className="text-sm font-mono">MY IDENTITY</span>
                     </div>
                     <div
                         onClick={() => logout()}

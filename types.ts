@@ -12,6 +12,15 @@ export interface User {
   longitude?: number;
   address?: string;
   avatar_url?: string;
+
+  // Trust & Identity
+  is_verified?: boolean;
+  rating?: number;
+  reputation_score?: number;
+  badges?: string[];
+  bio?: string;
+  total_volume_kg?: number;
+  joined_at?: string;
 }
 
 export interface Product {
