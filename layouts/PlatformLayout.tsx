@@ -1,5 +1,6 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 import { LayoutDashboard, ShoppingCart, Truck, LogOut, Settings, Sprout } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,11 +22,16 @@ export const PlatformLayout = () => {
     const location = useLocation();
     const path = location.pathname;
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
+    const { user, isAuthenticated, logout } = useAuthStore();
 
     // Close sidebar on route change (mobile)
     React.useEffect(() => {
         setSidebarOpen(false);
     }, [path]);
+
+    if (!isAuthenticated) {
+        return <Navigate to="/app/auth" />;
+    }
 
     return (
         <div className="flex h-screen bg-[#0E0E0E] text-white overflow-hidden font-sans">
@@ -65,12 +71,13 @@ export const PlatformLayout = () => {
                         <Settings size={18} />
                         <span className="text-sm font-mono">SYSTEM</span>
                     </div>
-                    <Link to="/app/auth">
-                        <div className="flex items-center space-x-3 px-4 py-3 text-red-500 hover:text-red-400 cursor-pointer transition-colors">
-                            <LogOut size={18} />
-                            <span className="text-sm font-mono">DISCONNECT</span>
-                        </div>
-                    </Link>
+                    <div
+                        onClick={() => logout()}
+                        className="flex items-center space-x-3 px-4 py-3 text-red-500 hover:text-red-400 cursor-pointer transition-colors"
+                    >
+                        <LogOut size={18} />
+                        <span className="text-sm font-mono">DISCONNECT</span>
+                    </div>
                 </div>
             </motion.aside>
 
@@ -91,15 +98,17 @@ export const PlatformLayout = () => {
                         </div>
                         <span className="text-white/20 hidden md:inline">|</span>
                         <div className="text-xs font-mono text-gray-400 hidden md:block">
-                            LAT: 18.5204 N  LON: 73.8567 E
+                            LAT: {user?.latitude?.toFixed(4) || 'N/A'} N  LON: {user?.longitude?.toFixed(4) || 'N/A'} E
                         </div>
                     </div>
                     <div className="flex items-center space-x-4">
                         <div className="text-right">
-                            <div className="text-xs text-gray-400 font-mono hidden md:block">USER ID</div>
-                            <div className="text-sm font-bold text-white">OP-7392</div>
+                            <div className="text-xs text-gray-400 font-mono hidden md:block">{user?.role?.toUpperCase()} ID</div>
+                            <div className="text-sm font-bold text-white max-w-[150px] truncate">{user?.name}</div>
                         </div>
-                        <div className="w-10 h-10 bg-gray-800 rounded-full border border-white/20 flex-shrink-0"></div>
+                        <div className="w-10 h-10 bg-gray-800 rounded-full border border-white/20 flex-shrink-0 flex items-center justify-center text-lg">
+                            {user?.name?.charAt(0).toUpperCase()}
+                        </div>
                     </div>
                 </header>
 

@@ -1,22 +1,78 @@
 import React from 'react';
 import { ArrowUpRight, ArrowDownRight, Filter } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
+import { supabase } from '../../../lib/supabase';
+import { useAuthStore } from '../../../store/authStore';
 
-const OrderRow = ({ id, crop, grade, qty, price, time, change }: any) => (
-    <div className="grid grid-cols-6 gap-4 p-3 border-b border-white/5 hover:bg-white/5 transition-colors text-sm font-mono cursor-pointer">
-        <div className="text-gray-400">#{id}</div>
-        <div className="text-white font-sans font-bold">{crop}</div>
-        <div className="text-gray-300">{grade}</div>
-        <div className="text-white">{qty} T</div>
-        <div className="text-danube-blue">₹ {price}</div>
-        <div className={`flex items-center ${change > 0 ? 'text-green-500' : 'text-red-500'}`}>
-            {change > 0 ? <ArrowUpRight size={12} className="mr-1" /> : <ArrowDownRight size={12} className="mr-1" />}
-            {Math.abs(change)}%
+interface OrderRowProps {
+    listing: any;
+    onBuy: (id: string, price: number, qty: number) => void;
+}
+
+const OrderRow: React.FC<OrderRowProps> = ({ listing, onBuy }) => (
+    <div className="grid grid-cols-6 gap-4 p-3 border-b border-white/5 hover:bg-white/5 transition-colors text-sm font-mono cursor-pointer group">
+        <div className="text-gray-400">#{listing.id.slice(0, 4)}</div>
+        <div className="text-white font-sans font-bold">{listing.product?.name || 'Unknown'}</div>
+        <div className="text-gray-300">{listing.grade}</div>
+        <div className="text-white">{listing.quantity_kg} kg</div>
+        <div className="text-danube-blue">₹ {listing.price_per_kg}</div>
+        <div className="flex items-center">
+            <Button size="sm" className="h-6 text-xs bg-green-600 hover:bg-green-700 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onBuy(listing.id, listing.quantity_kg * listing.price_per_kg, listing.quantity_kg)}>
+                BUY
+            </Button>
         </div>
     </div>
 );
 
 export const OrderBook = () => {
+    const [listings, setListings] = React.useState<any[]>([]);
+    const { user } = useAuthStore();
+
+    const fetchListings = async () => {
+        const { data } = await supabase
+            .from('listings')
+            .select('*, product:products(*)')
+            .eq('status', 'active')
+            .order('created_at', { ascending: false });
+        if (data) setListings(data);
+    };
+
+    React.useEffect(() => {
+        fetchListings();
+        // Poll every 5s for real-time feel
+        const interval = setInterval(fetchListings, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleBuy = async (listingId: string, totalPrice: number, qty: number) => {
+        if (!user) {
+            alert("Please login as buyer");
+            return;
+        }
+        if (!confirm(`Confirm purchase for ₹${totalPrice}?`)) return;
+
+        try {
+            // 1. Create Order
+            const { error: orderError } = await supabase.from('orders').insert([{
+                buyer_id: user.id,
+                listing_id: listingId,
+                quantity_kg: qty,
+                total_price: totalPrice,
+                status: 'pending'
+            }]);
+            if (orderError) throw orderError;
+
+            // 2. Mark Listing as Sold
+            await supabase.from('listings').update({ status: 'sold' }).eq('id', listingId);
+
+            alert("Order placed successfully!");
+            fetchListings();
+        } catch (e) {
+            console.error(e);
+            alert("Failed to place order.");
+        }
+    };
+
     return (
         <div className="bg-[#1A1A1A] border border-white/10 rounded-xl overflow-hidden h-full flex flex-col">
             <div className="p-4 border-b border-white/10 flex justify-between items-center bg-black/20">
@@ -33,21 +89,18 @@ export const OrderBook = () => {
                 <div>GRADE</div>
                 <div>QTY</div>
                 <div>ASK (KG)</div>
-                <div>24H</div>
+                <div>ACTION</div>
             </div>
 
             {/* Table Body - Scrollable */}
             <div className="flex-1 overflow-y-auto">
-                <OrderRow id="3920" crop="Pomegranate" grade="A (Premium)" qty="12" price="135.00" time="2m ago" change={2.4} />
-                <OrderRow id="3921" crop="Grapes (B)" grade="A" qty="5" price="85.50" time="5m ago" change={-0.8} />
-                <OrderRow id="3922" crop="Papaya" grade="Standard" qty="20" price="42.00" time="8m ago" change={0.0} />
-                <OrderRow id="3924" crop="Pomegranate" grade="B" qty="8" price="110.00" time="12m ago" change={1.2} />
-                <OrderRow id="3925" crop="Grapes (T)" grade="Premium" qty="15" price="98.00" time="15m ago" change={5.1} />
-                <OrderRow id="3920" crop="Pomegranate" grade="A (Premium)" qty="12" price="135.00" time="2m ago" change={2.4} />
-                <OrderRow id="3921" crop="Grapes (B)" grade="A" qty="5" price="85.50" time="5m ago" change={-0.8} />
-                <OrderRow id="3922" crop="Papaya" grade="Standard" qty="20" price="42.00" time="8m ago" change={0.0} />
-                <OrderRow id="3924" crop="Pomegranate" grade="B" qty="8" price="110.00" time="12m ago" change={1.2} />
-                <OrderRow id="3925" crop="Grapes (T)" grade="Premium" qty="15" price="98.00" time="15m ago" change={5.1} />
+                {listings.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500 text-sm font-mono">NO ACTIVE LISTINGS</div>
+                ) : (
+                    listings.map(l => (
+                        <OrderRow key={l.id} listing={l} onBuy={handleBuy} />
+                    ))
+                )}
             </div>
         </div>
     );

@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Check, Loader2, User, Phone, Terminal, Sparkles } from 'lucide-react';
+import { MapPin, Check, Loader2, User as UserIcon, Phone, Terminal, Sparkles } from 'lucide-react';
 import { supabase, isMockMode } from '../../../lib/supabase';
 import { CountrySelect } from '../../../components/ui/CountrySelect';
 import { Captcha } from '../../../components/ui/Captcha';
 import { countries, defaultCountry, Country } from '../../../lib/countries';
-
-type Role = 'customer' | 'farmer' | 'logistics' | 'vendor';
-
-interface BetaUser {
-    name: string;
-    phone: string;
-    role: Role;
-    location?: GeolocationCoordinates;
-}
+import { useAuthStore } from '../../../store/authStore';
+import { Role } from '../../../types';
 
 // Particle Component
-const Particle = ({ delay }: { delay: number }) => (
+const Particle: React.FC<{ delay: number }> = ({ delay }) => (
     <motion.div
         className="absolute w-1 h-1 bg-blue-500 rounded-full"
         initial={{
@@ -75,8 +68,10 @@ export const Auth = () => {
     const [searchParams] = useSearchParams();
     const initialRole = searchParams.get('role') as Role | null;
 
-    const [step, setStep] = useState<'phone' | 'otp' | 'details' | 'waitlist'>('phone');
+    const [step, setStep] = useState<'phone' | 'otp' | 'details'>('phone');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const login = useAuthStore((state) => state.login);
 
     // Auth State
     const [country, setCountry] = useState<Country>(defaultCountry);
@@ -185,113 +180,59 @@ export const Auth = () => {
         e.preventDefault();
         setLoading(true);
 
-        const userData = {
-            name,
-            phone: `${country.dialCode}${phone}`,
-            role: selectedRole,
-            latitude: location?.latitude || null,
-            longitude: location?.longitude || null,
-            created_at: new Date().toISOString()
-        };
+        const fullPhone = `${country.dialCode}${phone}`;
 
         try {
-            if (!isMockMode) {
-                const { error } = await supabase
-                    .from('beta_users')
-                    .insert([userData]);
+            // Check if user exists
+            const { data: existingUser, error: fetchError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('phone', fullPhone)
+                .single();
 
-                if (error) throw error;
-            } else {
-                console.log('Mock Mode: Simulate Saving to DB:', userData);
-                await new Promise(resolve => setTimeout(resolve, 1500));
+            if (existingUser) {
+                // User exists, log them in
+                login(existingUser);
+                alert(`Welcome back, ${existingUser.name}!`);
+                if (existingUser.role === 'farmer') navigate('/app/farmer');
+                else navigate('/app/buyer');
+                return;
             }
 
-            setStep('waitlist');
-            setShowConfetti(true);
+            // New User Registration
+            const newUser = {
+                name,
+                phone: fullPhone,
+                role: selectedRole,
+                latitude: location?.latitude || null,
+                longitude: location?.longitude || null,
+                created_at: new Date().toISOString()
+            };
+
+            const { data: createdUser, error: insertError } = await supabase
+                .from('users')
+                .insert([newUser])
+                .select() // important to return the created row
+                .single();
+
+            if (insertError) throw insertError;
+
+            if (createdUser) {
+                login(createdUser);
+                if (createdUser.role === 'farmer') navigate('/app/farmer');
+                else navigate('/app/buyer');
+            }
+
         } catch (err) {
-            console.error('Error saving to Supabase:', err);
-            setStep('waitlist');
-            setShowConfetti(true);
+            console.error('Error during auth:', err);
+            alert('Authentication failed. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
 
-    if (step === 'waitlist') {
-        return (
-            <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 relative overflow-hidden">
-                {showConfetti && <Confetti />}
 
-                {/* Animated Background */}
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(29,185,84,0.1),transparent_50%)]" />
-                </div>
-
-                <motion.div
-                    className="text-center max-w-md relative z-10"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, type: "spring" }}
-                >
-                    <motion.div
-                        className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 relative"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                    >
-                        <motion.div
-                            className="absolute inset-0 bg-green-500 rounded-full"
-                            animate={{
-                                scale: [1, 1.5, 1.5],
-                                opacity: [0.5, 0, 0]
-                            }}
-                            transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                repeatDelay: 0.5
-                            }}
-                        />
-                        <Check size={40} className="text-black" />
-                    </motion.div>
-
-                    <motion.h1
-                        className="text-3xl font-bold mb-4 font-sans"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        You're on the list!
-                    </motion.h1>
-
-                    <motion.p
-                        className="text-gray-400 mb-8"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                    >
-                        Thank you, <span className="text-white font-semibold">{name}</span>.
-                        We have secured your spot as a <span style={{ color: roles.find(r => r.id === selectedRole)?.color }} className="capitalize font-bold">{selectedRole}</span>.
-                    </motion.p>
-
-                    <motion.div
-                        className="bg-[#111] p-6 rounded-lg border border-gray-800 font-mono text-sm text-left"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                    >
-                        <p className="text-green-500">$ status: LOCKED</p>
-                        <p className="text-gray-500">$ queue_position: {Math.floor(Math.random() * 500) + 1}</p>
-                        <p className="text-gray-500">$ location_access: {location ? 'GRANTED' : 'DENIED'}</p>
-                        <p className="text-gray-500">$ server_region: {country.code}</p>
-                        <div className="mt-4 pt-4 border-t border-gray-800 text-xs text-gray-600">
-                            Wait for your invite code at {country.dialCode} {phone}.
-                        </div>
-                    </motion.div>
-                </motion.div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -429,7 +370,7 @@ export const Auth = () => {
                             <div>
                                 <label className="block text-xs font-mono text-gray-500 mb-2">FULL NAME</label>
                                 <div className="relative">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
                                     <input
                                         type="text"
                                         required
